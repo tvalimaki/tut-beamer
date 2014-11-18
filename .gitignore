@@ -1,3 +1,4 @@
+# intermediate files
 *.aux
 *.log
 *.nav
@@ -5,3 +6,6 @@
 *.snm
 *.synctex.gz
 *.toc
+
+# osx
+.DS_Store

@@ -1,6 +1,6 @@
 % This is file `beamerthemetut.sty',
 % This provides a beamer theme more or less compliant
-% with the TUT PowerPoint slides
+% with the TUT PowerPoint slides. Supported aspect ratios 4:3 and 16:9
 %
 % The theme is based on the work of Benjamin Weiss that can be found on
 % https://github.com/hsrmbeamertheme/hsrmbeamertheme
@@ -13,14 +13,39 @@
 
 \ProvidesPackage{beamerthemetut}
 
-\usepackage{tikz}
+\usepackage{xparse}
 
+\ExplSyntaxOn % define commands for different aspect ratios
+\NewDocumentCommand{\ifaspectratio}{mO{}}
+ {
+  % Recover the option from those passed to the class
+  \keys_set:nf { zunbeltz/beameroptions } { \use:c { opt@beamer.cls } }
+  \str_case:Vnn \l_zunbeltz_aspectratio_tl { #1 } { #2 }
+ }
+% We need to define only one key, the other are treated as `unknown'
+\keys_define:nn { zunbeltz/beameroptions }
+ {
+  aspectratio .tl_set:N = \l_zunbeltz_aspectratio_tl,
+  aspectratio .initial:n = 43,
+  unknown .code:n = {},
+ }
+
+% Generate the variants we need
+\cs_generate_variant:Nn \keys_set:nn { nf }
+\cs_generate_variant:Nn \str_if_eq:nnTF { nV }
+\cs_generate_variant:Nn \str_case:nnn { V }
+\ExplSyntaxOff
+
+% style options
 \newif\if@doSans
 \@doSansfalse
 \DeclareOption{noserifmath}{\@doSanstrue}
 \newif\if@doSectionPage
 \@doSectionPagefalse
-\DeclareOption{nosectionpages}{\@doSectionPagetrue}
+\DeclareOption{sectionpages}{\@doSectionPagetrue}
+\newif\if@languageFinnish
+\@languageFinnishfalse
+\DeclareOption{finnish}{\@languageFinnishtrue}
 \ProcessOptions
 
 \newtoks\email
@@ -158,9 +183,18 @@
 % Set slide background
 %---------------------------------------------------------------------
 \newcommand\BgImage{%
-\tikz[overlay,remember picture]
-        \node[at=(current page.south west),anchor=south west,inner sep=0pt] {
-           \includegraphics[height=\paperheight]{tut_bg.eps}};}
+    \if@languageFinnish
+    \ifaspectratio{%
+        {43}{\includegraphics[width=\paperwidth]{tty_bg.pdf}}
+        {169}{\includegraphics[width=\paperwidth]{tty_bg169.pdf}}
+    }%
+    \else
+    \ifaspectratio{%
+        {43}{\includegraphics[width=\paperwidth]{tut_bg.pdf}}
+        {169}{\includegraphics[width=\paperwidth]{tut_bg169.pdf}}
+    }%
+    \fi%
+}
 
 \usebackgroundtemplate{\BgImage}
 
@@ -171,11 +205,18 @@
 % Titlepage structure
 \def\maketitle{\ifbeamer@inframe\titlepage\else
 \begingroup\renewcommand\BgImage{%
-    \tikz[overlay,remember picture]
-    \node[at=(current page.south west),anchor=south west,inner sep=0pt] {
-        \includegraphics[width=\paperwidth]{tut_titlepage.eps}};
-}
-\frame[plain]{\titlepage}\endgroup\fi}
+    \if@languageFinnish
+    \ifaspectratio{%
+        {43}{\includegraphics[width=\paperwidth]{tty_titlepage.pdf}}
+        {169}{\includegraphics[width=\paperwidth]{tty_titlepage169.pdf}}
+    }%
+    \else
+    \ifaspectratio{%
+        {43}{\includegraphics[width=\paperwidth]{tut_titlepage.pdf}}
+        {169}{\includegraphics[width=\paperwidth]{tut_titlepage169.pdf}}
+    }%
+    \fi}\frame[plain]{\titlepage}
+\endgroup\fi}
 \def\titlepage{\usebeamertemplate{title page}}
 \setbeamertemplate{title page}
 {
@@ -201,10 +242,10 @@
 		{\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}%
 	\fi%
 	\ifx\the\email\@empty%
-	\else
+	\else%
 	    \vspace*{2mm}
 	    {\usebeamerfont{email}\usebeamercolor[fg]{email}\the\email\par}
-	\fi
+	\fi%
 	\vfill
 	\ifx\insertinstitut\@empty%
 	\else%
@@ -223,6 +264,20 @@
 	\expandafter\insertsectionHEADaux\insertsectionhead}
 	\newcommand{\insertsectionHEADaux}[3]{\MakeUppercase{#3}
 }
+
+\if@doSectionPage
+% Insert frame with section title at every section start
+\AtBeginSection[]
+{
+\begingroup
+%\setbeamercolor{background canvas}{bg=tutSec2}
+\begin{frame}[plain]
+\centering
+\vfill\usebeamerfont{section title}\textcolor{WarmGreyDark}{\insertsectionHEAD}\vfill
+\end{frame}
+\endgroup
+}
+\fi
 
 %---------------------------------------------------------------------
 % Frametitle

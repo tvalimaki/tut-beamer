@@ -1,0 +1,112 @@
+%!TEX program = xelatex
+\documentclass[compress]{beamer}
+
+\usepackage[english]{babel}
+\usepackage{blindtext} % to generate meaningless content
+\usepackage{listings}
+
+\usetheme{tut}
+
+\title{\LaTeX{} Beamer Theme}
+\subtitle{Example}
+\author{Tuomas Välimäki}
+\institute{Department of Automation Science and Engineering\\Tampere University of Technology}
+\date{\today}
+\email{tuomas.s.valimaki@tut.fi}
+
+\begin{document}
+
+\maketitle
+
+\section*{Contents}
+\begin{frame}
+	\frametitle{Contents}
+	\tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{First section}
+\subsection{Text}
+\begin{frame}{First Slide}
+	\blindtext
+\end{frame}
+
+\subsection{Figure and equation}
+\begin{frame}{Another Slide}
+  \begin{columns}[onlytextwidth]
+    \begin{column}{0.5\textwidth}
+        \centering
+        \begin{figure}
+        \includegraphicscopyright[width=\textwidth]{photo.jpg}{Image courtesy of \href{http://openphoto.net/gallery/image/view/5468}{openphoto.net}}
+        \end{figure}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+    Here is some regular text in a column. And there is an equation
+    \[
+      f(x)=ax^2+bx+c
+    \]
+    Here is some \alert{important} text.
+    \end{column}
+​  \end{columns}
+\end{frame}
+
+\subsection{Lists}
+\begin{frame}{Third Slide}
+  \begin{columns}[onlytextwidth]
+    \begin{column}{0.5\textwidth}
+      This slide has a list\dots
+      \blinditemize[3]
+      \vspace*{5mm}
+      descriptions\dots
+      \blinddescription[2]
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      as well as some enumerations
+      \blindenumerate[4]
+    \end{column}
+​  \end{columns}
+\end{frame}
+
+\section{Another section}
+\subsection{Blocks}
+\begin{frame}{Some Blocks}
+    \begin{exampleblock}{Example}
+        This is an example
+    \end{exampleblock}
+    
+    \begin{alertblock}{Note}
+        This is important
+    \end{alertblock}
+
+    \begin{theorem}[Pythagoras] 
+        $ a^2 + b^2 = c^2$
+    \end{theorem}
+\end{frame}
+
+\subsection{Listing}
+\begin{frame}[containsverbatim]{More slides}
+    There's a listing below
+    \lstset{language=bash}
+    \begin{lstlisting}
+    $ sudo apt-get install texlive
+    \end{lstlisting}%$
+\end{frame}
+
+\section{Further reading}
+\begin{frame}{Further reading}
+	\begin{thebibliography}{10}
+    
+	\beamertemplatebookbibitems
+	\bibitem{Mountaineers2010}
+	Mountaineers
+	\newblock \doublequoted{Mountaineering: Freedom of the Hills}
+	\newblock Mountaineers Books, 2010
+
+	\beamertemplatearticlebibitems
+	\bibitem{Tantau2013}
+	T.~Tantau, J.~Wright, V.~Miletić
+	\newblock \doublequoted{The BEAMER class -- user guide for version~3.33}
+	\newblock 2013
+  \end{thebibliography}
+\end{frame}
+
+\end{document}

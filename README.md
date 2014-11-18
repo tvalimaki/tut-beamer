@@ -1,4 +1,4 @@
 tut-beamer
 ==========
 
-Unofficial beamer teme for Tampere University of Technology
+Unofficial beamer theme for Tampere University of Technology

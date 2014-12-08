@@ -1,6 +1,6 @@
-% This is file `beamerthemetut.sty',
-% This provides a beamer theme more or less compliant
+% `beamerthemetut.sty' provides a beamer theme more or less compliant
 % with the TUT PowerPoint slides. Supported aspect ratios 4:3 and 16:9
+% Newest versions available under https://github.com/tvalimaki/tut-beamer
 %
 % The theme is based on the work of Benjamin Weiss that can be found on
 % https://github.com/hsrmbeamertheme/hsrmbeamertheme
@@ -13,7 +13,10 @@
 
 \ProvidesPackage{beamerthemetut}
 
-\usepackage{xparse}
+\RequirePackage{arev}
+\RequirePackage[T1]{fontenc} 
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{xparse}
 
 \ExplSyntaxOn % define commands for different aspect ratios
 \NewDocumentCommand{\ifaspectratio}{mO{}}
@@ -37,9 +40,6 @@
 \ExplSyntaxOff
 
 % style options
-\newif\if@doSans
-\@doSansfalse
-\DeclareOption{noserifmath}{\@doSanstrue}
 \newif\if@doSectionPage
 \@doSectionPagefalse
 \DeclareOption{sectionpages}{\@doSectionPagetrue}
@@ -47,8 +47,6 @@
 \@languageFinnishfalse
 \DeclareOption{finnish}{\@languageFinnishtrue}
 \ProcessOptions
-
-\newtoks\email
 
 \mode<presentation>
 %---------------------------------------------------------------------
@@ -61,9 +59,9 @@
 %---------------------------------------------------------------------
 % custom commands
 %---------------------------------------------------------------------
-\newcommand{\rightTextArrow}{→}
-\newcommand{\quoted}[1]{›#1‹}
-\newcommand{\doublequoted}[1]{»#1«}
+\newcommand{\rightTextArrow}{$\rightarrow$}
+\newcommand{\quoted}[1]{>#1<}
+\newcommand{\doublequoted}[1]{>>#1<<}
 
 %---------------------------------------------------------------------
 % Itemize
@@ -141,29 +139,10 @@
 %---------------------------------------------------------------------
 
 % General
-
-% Declare fontfamilys
-
-% Sans serif math option
-\if@doSans%
-	% sans serif math %
-	\usepackage[no-math]{fontspec}%	
-	\setmainfont{Arial}%
-\else%
-	% serif math %
-	\usepackage{fontspec}%	
-	\usefonttheme[onlymath]{serif}%
-\fi%
-\newfontfamily\Light{Arial}%
-\newfontfamily\Book{Arial-Bold}%
-\newfontfamily\Medium{Arial-Bold}%
-\setsansfont{Arial}%
-
-
-\renewcommand\UrlFont{\Medium}
+\renewcommand\UrlFont{\rmfamily\bfseries}
 % Titlepage
-\setbeamerfont{title}{family=\Light,size=\fontsize{20}{20}}
-\setbeamerfont{subtitle}{family=\Light,size=\fontsize{12}{14}}
+\setbeamerfont{title}{size=\fontsize{20}{20}}
+\setbeamerfont{subtitle}{size=\fontsize{12}{14}}
 \setbeamerfont{date}{size=\fontsize{8}{10}}
 \setbeamerfont{author}{size=\fontsize{12}{15}}
 \setbeamerfont{institute}{size=\fontsize{8}{10}}
@@ -171,16 +150,16 @@
 % Section
 \setbeamerfont{section title}{size=\LARGE}
 % Content
-\setbeamerfont{frametitle}{family=\Light,size=\large}
-\setbeamerfont{copyright text}{family=\Light,size=\tiny}
-\setbeamerfont{block title}{family=\Book,size=\large}
-\setbeamerfont{block title alerted}{family=\Book,size=\large}
-\setbeamerfont{alerted text}{family=\Medium}
+\setbeamerfont{frametitle}{size=\large}
+\setbeamerfont{copyright text}{size=\tiny}
+\setbeamerfont{block title}{series=\bfseries,size=\large}
+\setbeamerfont{block title alerted}{series=\bfseries,size=\large}
+\setbeamerfont{alerted text}{series=\bfseries}
 % Captions
-\setbeamerfont{caption name}{family=\Book}
+\setbeamerfont{caption name}{series=\bfseries}
 
 %---------------------------------------------------------------------
-% Set slide background
+% Background
 %---------------------------------------------------------------------
 \newcommand\BgImage{%
     \if@languageFinnish
@@ -201,6 +180,9 @@
 %---------------------------------------------------------------------
 % Titlepage
 %---------------------------------------------------------------------
+
+% Email field
+\newtoks\email
 
 % Titlepage structure
 \def\maketitle{\ifbeamer@inframe\titlepage\else
@@ -270,7 +252,6 @@
 \AtBeginSection[]
 {
 \begingroup
-%\setbeamercolor{background canvas}{bg=tutSec2}
 \begin{frame}[plain]
 \centering
 \vfill\usebeamerfont{section title}\textcolor{WarmGreyDark}{\insertsectionHEAD}\vfill

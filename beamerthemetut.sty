@@ -54,7 +54,7 @@
 %---------------------------------------------------------------------
 \useoutertheme[subsection=false,shadow]{miniframes}
 \setbeamertemplate{section in toc}[sections numbered]
-\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{subsection in toc}[square]
 
 %---------------------------------------------------------------------
 % custom commands
@@ -202,8 +202,7 @@
 \def\titlepage{\usebeamertemplate{title page}}
 \setbeamertemplate{title page}
 {
-	\begin{minipage}[b][\paperheight]{\textwidth}
-	\vspace*{30mm}
+	\begin{minipage}[t][.40\paperheight][b]{\textwidth}
 	\centering
 	\ifx\inserttitle\@empty%
 	\else%
@@ -212,8 +211,11 @@
 	\ifx\insertsubtitle\@empty%
 	\else%
 		{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
-		\vspace*{5mm}
 	\fi%
+	\end{minipage}
+	\vfill
+	\begin{minipage}[b][.50\paperheight]{\textwidth}
+	\centering
 	\ifx\insertdate\@empty%
 	\else%
 		{\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}%

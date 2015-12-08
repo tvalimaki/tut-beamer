@@ -1,5 +1,5 @@
 % `beamerthemetut.sty' provides a beamer theme more or less compliant
-% with the TUT PowerPoint slides. Supported aspect ratios 4:3 and 16:9
+% with the TUT PowerPoint slides.
 % Newest versions available under https://github.com/tvalimaki/tut-beamer
 %
 % The theme is based on the work of Benjamin Weiss that can be found on
@@ -16,30 +16,11 @@
 \RequirePackage{arev}
 \RequirePackage[T1]{fontenc} 
 \RequirePackage[utf8]{inputenc}
-\RequirePackage{xparse}
+\RequirePackage{tikz}
+\RequirePackage{xpatch}
+\RequirePackage{silence}
 
-\ExplSyntaxOn % define commands for different aspect ratios
-\NewDocumentCommand{\ifaspectratio}{mO{}}
- {
-  % Recover the option from those passed to the class
-  \keys_set:nf { zunbeltz/beameroptions } { \use:c { opt@beamer.cls } }
-  \str_case:Vnn \l_zunbeltz_aspectratio_tl { #1 } { #2 }
- }
-% We need to define only one key, the other are treated as `unknown'
-\keys_define:nn { zunbeltz/beameroptions }
- {
-  aspectratio .tl_set:N = \l_zunbeltz_aspectratio_tl,
-  aspectratio .initial:n = 43,
-  unknown .code:n = {},
- }
-
-% Generate the variants we need
-\cs_generate_variant:Nn \keys_set:nn { nf }
-\cs_generate_variant:Nn \str_if_eq:nnTF { nV }
-\cs_generate_variant:Nn \str_case:nnn { V }
-\ExplSyntaxOff
-
-% style options
+% Style options
 \newif\if@doSectionPage
 \@doSectionPagefalse
 \DeclareOption{sectionpages}{\@doSectionPagetrue}
@@ -47,21 +28,20 @@
 \@languageFinnishfalse
 \DeclareOption{finnish}{\@languageFinnishtrue}
 \ProcessOptions
+\beamer@compresstrue
 
 \mode<presentation>
 %---------------------------------------------------------------------
 % TOC
 %---------------------------------------------------------------------
-\useoutertheme[subsection=false,shadow]{miniframes}
+\useoutertheme[compress=true,subsection=false,shadow]{miniframes}
 \setbeamertemplate{section in toc}[sections numbered]
 \setbeamertemplate{subsection in toc}[square]
 
 %---------------------------------------------------------------------
-% custom commands
+% Custom commands
 %---------------------------------------------------------------------
 \newcommand{\rightTextArrow}{$\rightarrow$}
-\newcommand{\quoted}[1]{>#1<}
-\newcommand{\doublequoted}[1]{>>#1<<}
 
 %---------------------------------------------------------------------
 % Itemize
@@ -75,73 +55,71 @@
 %---------------------------------------------------------------------
 % Colors
 %---------------------------------------------------------------------
+% Primary presentation colors
+\definecolor{WarmGreyDark}{RGB}{70,65,60}
+\definecolor{WarmGreyLight}{RGB}{170,165,160}
+% Primary colors specified in TUT graphical guidelines
+\definecolor{TUTGrey}{RGB}{225,225,225}
+\definecolor{TUTBlue}{RGB}{70,200,255}
+\definecolor{TUTGreen}{RGB}{180,220,0}
+% Secondary colors specified in TUT graphical guidelines
+\definecolor{TUTsecOrange}{RGB}{234,103,12}
+\definecolor{TUTsecRed}{RGB}{203,0,58}
+\definecolor{TUTsecPink}{RGB}{226,0,120}
+\definecolor{TUTsecPlum}{RGB}{132,28,128}
+\definecolor{TUTsecGreen}{RGB}{0,120,44}
+\definecolor{TUTsecPetrol}{RGB}{0,152,172}
+\definecolor{TUTsecBlue}{RGB}{0,127,197}
+\definecolor{TUTsecDarkblue}{RGB}{0,65,121}
+\definecolor{TUTsecDarkred}{RGB}{132,9,43} % TUT-foundation color
 
-% Primary Colors
-\definecolor{Red}{rgb}{0.882352941,0,0.098039216}
-\definecolor{RedDark}{rgb}{0.588235294,0,0.058823529}
-\definecolor{WarmGreyDark}{rgb}{0.274509804,0.254901961,0.235294118}
-\definecolor{WarmGreyLight}{rgb}{0.666666667,0.647058824,0.62745098}
-
-% Secondary Colors
-\definecolor{Sec1}{rgb}{0,0.588235294,0.509803922}
-\definecolor{Sec1Dark}{rgb}{0,0.392156863,0.31372549}
-\definecolor{Sec1Comp}{rgb}{0.294117647,0.745098039,0.882352941}
-\definecolor{Sec1CompDark}{rgb}{0.196078431,0.490196078,0.568627451}
-
-\definecolor{Sec2}{rgb}{0.607843137,0.764705882,0.156862745}
-\definecolor{Sec2Dark}{rgb}{0.411764706,0.490196078,0.098039216}
-\definecolor{Sec2Comp}{rgb}{0.254901961,0.156862745,0.509803922}
-\definecolor{Sec2CompDark}{rgb}{0.176470588,0.098039216,0.333333333}
-
-\definecolor{Sec3}{rgb}{0.509803922,0.078431373,0.31372549}
-\definecolor{Sec3Dark}{rgb}{0.338345865,0.058823529,0.196078431}
-\definecolor{Sec3Comp}{rgb}{1,0.509803922,0}
-\definecolor{Sec3CompDark}{rgb}{0.666666667,0.333333333,0}
-
-% TUT specific colors
-\definecolor{tutSec1}{rgb}{0.65490196,0.85490106,0.18039216}
-\definecolor{tutSec2}{rgb}{0.29019608,0.7333333,0.97254902}
-\definecolor{tutSec2Dark}{rgb}{0.14117647,0.3607843,0.5254902}
-
+% Palettes
+\setbeamercolor{palette primary}{fg=WarmGreyDark,bg=TUTBlue}
+\setbeamercolor{palette secondary}{fg=WarmGreyDark,bg=TUTGreen}
+\setbeamercolor{palette tertiary}{fg=WarmGreyDark,bg=TUTGrey}
+\setbeamercolor{palette quaternary}{fg=white,bg=TUTsecGreen}
+\setbeamercolor{palette frametitle}{fg=WarmGreyDark}
 % General
 \setbeamercolor{normal text}{fg=WarmGreyDark}
-\setbeamercolor{structure}{fg=WarmGreyDark}
-\setbeamercolor{alerted text}{fg=Red}
-\setbeamercolor{example text}{fg=white}
+\setbeamercolor{structure}{fg=TUTsecBlue}
+\setbeamercolor{alerted text}{fg=TUTsecRed}
+\setbeamercolor{example text}{fg=TUTsecGreen}
 \setbeamercolor{copyright text}{fg=WarmGreyLight}
-\setbeamercolor{palette primary}{fg=WarmGreyDark}
-\setbeamercolor{palette secondary}{fg=WarmGreyDark,bg=tutSec2}
-\setbeamercolor{palette tertiary}{fg=black,bg=WarmGreyLight}
-\setbeamercolor{palette quaternary}{fg=white, bg=tutSec2Dark}
-\setbeamercolor{palette frametitle}{fg=WarmGreyDark, bg=white}
 % Titlepage
 \setbeamercolor{title}{parent=normal text}
 \setbeamercolor{subtitle}{parent=normal text}
-\setbeamercolor{institute}{parent=normal text}
+\setbeamercolor{date}{parent=palette primary}
+\setbeamercolor{author}{parent=palette primary}
+\setbeamercolor{email}{parent=palette primary}
+\setbeamercolor{institute}{parent=palette primary}
+% TOC
+\setbeamercolor{section in toc}{parent=normal text}
 % Content
 \setbeamercolor{frametitle}{parent=palette frametitle}
 % Blocks
-\setbeamercolor{block title}{parent=palette quaternary}
-\setbeamercolor{block body}{parent=palette secondary}
-\setbeamercolor{block title example}{fg=white, bg=Sec2Dark}
-\setbeamercolor{block body example}{fg=WarmGreyDark, bg=tutSec1}
-\setbeamercolor{block title alerted}{fg=white, bg=RedDark}
-\setbeamercolor{block body alerted}{fg=white, bg=Red}
+\setbeamercolor{block title}{use=palette primary,bg=palette primary.bg!50!black,fg=white}
+\setbeamercolor{block body}{parent=palette primary}
+\setbeamercolor{block title example}{parent=palette quaternary}
+\setbeamercolor{block body example}{parent=palette secondary}
+\setbeamercolor{block title alerted}{fg=white, bg=TUTsecDarkred}
+\setbeamercolor{block body alerted}{fg=white, bg=TUTsecRed}
 % Notes
-\setbeamercolor{note page}{fg=WarmGreyDark,bg=WarmGreyLight}
-\setbeamercolor{note title}{fg=white, bg=WarmGreyDark}
+\setbeamercolor{note page}{fg=WarmGreyDark,bg=white}
+\setbeamercolor{note title}{use=palette secondary,fg=white,bg=palette secondary.bg}
 \setbeamercolor{note date}{parent=note title}
 % Page Number
 \setbeamercolor{page number in head/foot}{fg=WarmGreyDark}
+% Bibliography
+\setbeamercolor{bibliography entry author}{fg=WarmGreyDark}
+\setbeamercolor{bibliography entry note}{use=bibliography entry author,fg=bibliography entry author.fg!50!white}
 
 %---------------------------------------------------------------------
 % Fonts
 %---------------------------------------------------------------------
-
 % General
 \renewcommand\UrlFont{\rmfamily\bfseries}
 % Titlepage
-\setbeamerfont{title}{size=\fontsize{20}{20}}
+\setbeamerfont{title}{size=\fontsize{20.74}{20.74}}
 \setbeamerfont{subtitle}{size=\fontsize{12}{14}}
 \setbeamerfont{date}{size=\fontsize{8}{10}}
 \setbeamerfont{author}{size=\fontsize{12}{15}}
@@ -155,54 +133,102 @@
 \setbeamerfont{block title}{series=\bfseries,size=\large}
 \setbeamerfont{block title alerted}{series=\bfseries,size=\large}
 \setbeamerfont{alerted text}{series=\bfseries}
+\setbeamerfont{description item}{series=\bfseries}
 % Captions
 \setbeamerfont{caption name}{series=\bfseries}
 
 %---------------------------------------------------------------------
 % Background
 %---------------------------------------------------------------------
-\newcommand\BgImage{%
-    \if@languageFinnish
-    \ifaspectratio{%
-        {43}{\includegraphics[width=\paperwidth]{tty_bg.pdf}}
-        {169}{\includegraphics[width=\paperwidth]{tty_bg169.pdf}}
-    }%
-    \else
-    \ifaspectratio{%
-        {43}{\includegraphics[width=\paperwidth]{tut_bg.pdf}}
-        {169}{\includegraphics[width=\paperwidth]{tut_bg169.pdf}}
-    }%
-    \fi%
+% Define a macro to draw the TUT gear
+\newcommand\tutgear[2][fill=black]{%
+\begin{tikzpicture}[y = #2,x = #2]
+\path[nonzero rule, inner sep=0pt, outer sep=0pt, #1]%
+  (-0.03871,  0.26461) .. controls (-0.13550,  0.25062) and (-0.21553,  0.18492) .. (-0.24979,  0.09646) --
+  ( 0.24980,  0.09646) .. controls ( 0.21579,  0.18423) and ( 0.13675,  0.24959) .. ( 0.04099,  0.26428) --
+  ( 0.04093,  0.49830) -- ( 0.09697,  0.49061) --
+  ( 0.10735,  0.37796) .. controls ( 0.13032,  0.37146) and ( 0.15242,  0.36295) .. ( 0.17347,  0.35260) --
+  ( 0.25668,  0.42940) -- ( 0.30253,  0.39851) --
+  ( 0.26236,  0.29263) .. controls ( 0.28336,  0.27384) and ( 0.30231,  0.25284) .. ( 0.31887,  0.22998) --
+  ( 0.42851,  0.25879) -- ( 0.45447,  0.21004) --
+  ( 0.36929,  0.13544) .. controls ( 0.37889,  0.10934) and ( 0.38581,  0.08194) .. ( 0.38968,  0.05358) --
+  ( 0.50000,  0.02761) -- ( 0.50000, -0.02761) --
+  ( 0.38968, -0.05357) .. controls ( 0.38581, -0.08194) and ( 0.37889, -0.10934) .. ( 0.36929, -0.13544) --
+  ( 0.45447, -0.21002) -- ( 0.42851, -0.25880) --
+  ( 0.31887, -0.22999) .. controls ( 0.30231, -0.25284) and ( 0.28336, -0.27383) .. ( 0.26236, -0.29261) --
+  ( 0.30253, -0.39852) -- ( 0.25668, -0.42940) --
+  ( 0.17347, -0.35260) .. controls ( 0.15242, -0.36295) and ( 0.13032, -0.37147) .. ( 0.10735, -0.37796) --
+  ( 0.09697, -0.49061) -- ( 0.04093, -0.49830) --
+  ( 0.04102, -0.26426) .. controls ( 0.13907, -0.24921) and ( 0.21958, -0.18104) .. ( 0.25217, -0.09010) --
+  (-0.25217, -0.09010) .. controls (-0.21934, -0.18175) and (-0.13784, -0.25027) .. (-0.03875, -0.26461) --
+  (-0.03835, -0.49830) -- (-0.09697, -0.49061) --
+  (-0.10736, -0.37796) .. controls (-0.13032, -0.37146) and (-0.15243, -0.36295) .. (-0.17347, -0.35259) --
+  (-0.25669, -0.42940) -- (-0.30253, -0.39852) --
+  (-0.26237, -0.29261) .. controls (-0.28337, -0.27383) and (-0.30232, -0.25284) .. (-0.31887, -0.22999) --
+  (-0.42850, -0.25880) -- (-0.45447, -0.21002) --
+  (-0.36931, -0.13544) .. controls (-0.37891, -0.10932) and (-0.38580, -0.08194) .. (-0.38969, -0.05357) --
+  (-0.50000, -0.02761) -- (-0.50000,  0.02761) --
+  (-0.38969,  0.05358) .. controls (-0.38580,  0.08194) and (-0.37891,  0.10933) .. (-0.36931,  0.13544) --
+  (-0.45447,  0.21004) -- (-0.42850,  0.25879) --
+  (-0.31887,  0.22998) .. controls (-0.30232,  0.25284) and (-0.28337,  0.27384) .. (-0.26237,  0.29263) --
+  (-0.30253,  0.39851) -- (-0.25669,  0.42940) --
+  (-0.17347,  0.35260) .. controls (-0.15243,  0.36295) and (-0.13032,  0.37146) .. (-0.10736,  0.37796) --
+  (-0.09697,  0.49061) -- (-0.03835,  0.49830) -- (-0.03871,  0.26461) -- cycle;
+\end{tikzpicture}}
+
+% Title page background
+\newcommand\TitleBgImage{%
+\begin{tikzpicture}[overlay,remember picture]
+% colored upper side beam
+\usebeamercolor{palette secondary}
+\path[fill=bg,nonzero rule]
+    ([yshift=0.45\paperheight] current page.south west) -- +(0,0.47\paperheight) -- +(0.0626\paperheight,0.4614\paperheight) -- +(0.0626\paperheight,0) -- cycle;
+% colored bottom half of page
+\usebeamercolor{palette primary}
+\path[fill=bg,nonzero rule]
+    (current page.south west) -- ++(0,0.5544\paperheight) -- +(\paperwidth,0) -- (current page.south east) -- cycle;
+% gear-half
+\node at ([xshift=-0.047\paperheight]current page.south west) [anchor=center] {\tutgear[fill=white]{1.13\paperheight}};
+% logo
+\if@languageFinnish
+\node at ([shift={(0.0626\paperheight,-0.0626\paperheight)}] current page.north west) [anchor=west] {\includegraphics[height=0.0626\paperheight]{TUTlogo_fi}};
+\else
+\node at ([shift={(0.0626\paperheight,-0.0626\paperheight)}] current page.north west) [anchor=west] {\includegraphics[height=0.0626\paperheight]{TUTlogo_en}};
+\fi
+\end{tikzpicture}
 }
 
+% Frame background
+\newcommand\FrameBgImage{%
+\begin{tikzpicture}[overlay,remember picture]
+% colored upper side beam
+\usebeamercolor{palette secondary}
+\path[fill=bg,nonzero rule]
+    ([yshift=0.45\paperheight] current page.south west) -- +(0,0.47\paperheight) -- +(0.0626\paperheight,0.4614\paperheight) -- +(0.0626\paperheight,0) -- cycle;
+% colored lower side beam
+\usebeamercolor{palette primary}
+\path[fill=bg,nonzero rule]
+    (current page.south west) -- +(0,0.47\paperheight) -- +(0.0626\paperheight,0.4614\paperheight) -- +(0.0626\paperheight,0) -- cycle;
+\end{tikzpicture}
+}
+
+\newcommand\BgImage{\FrameBgImage}
 \usebackgroundtemplate{\BgImage}
 
 %---------------------------------------------------------------------
 % Titlepage
 %---------------------------------------------------------------------
-
 % Email field
 \newtoks\email
 
 % Titlepage structure
 \def\maketitle{\ifbeamer@inframe\titlepage\else
-\begingroup\renewcommand\BgImage{%
-    \if@languageFinnish
-    \ifaspectratio{%
-        {43}{\includegraphics[width=\paperwidth]{tty_titlepage.pdf}}
-        {169}{\includegraphics[width=\paperwidth]{tty_titlepage169.pdf}}
-    }%
-    \else
-    \ifaspectratio{%
-        {43}{\includegraphics[width=\paperwidth]{tut_titlepage.pdf}}
-        {169}{\includegraphics[width=\paperwidth]{tut_titlepage169.pdf}}
-    }%
-    \fi}\frame[plain]{\titlepage}
+\begingroup\renewcommand\BgImage{\TitleBgImage}\frame[plain]{\titlepage}
 \endgroup\fi}
 \def\titlepage{\usebeamertemplate{title page}}
 \setbeamertemplate{title page}
 {
-	\begin{minipage}[t][.40\paperheight][b]{\textwidth}
+	\begin{minipage}[t][.42\paperheight][b]{\textwidth}
 	\centering
 	\ifx\inserttitle\@empty%
 	\else%
@@ -213,25 +239,27 @@
 		{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
 	\fi%
 	\end{minipage}
+  \begin{minipage}[c][.18\paperheight]{\textwidth}
+  \centering
+  \ifx\insertdate\@empty%
+  \else%
+    {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}%
+  \fi% 
+  \end{minipage}
 	\vfill
-	\begin{minipage}[b][.50\paperheight]{\textwidth}
+	\begin{minipage}[b][.35\paperheight]{\textwidth}
 	\centering
-	\ifx\insertdate\@empty%
-	\else%
-		{\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}%
-	\fi% 
 	\ifx\insertauthor\@empty%
 	\else%
-	    \vspace*{10mm}
 		{\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}%
 	\fi%
 	\ifx\the\email\@empty%
 	\else%
-	    \vspace*{2mm}
-	    {\usebeamerfont{email}\usebeamercolor[fg]{email}\the\email\par}
+	  \vspace*{2mm}
+	  {\usebeamerfont{email}\usebeamercolor[fg]{email}\href{mailto:\the\email}{\the\email}\par}
 	\fi%
 	\vfill
-	\ifx\insertinstitut\@empty%
+	\ifx\insertinstitute\@empty%
 	\else%
 		{\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute\par}%
 	\fi% 
@@ -242,21 +270,13 @@
 %---------------------------------------------------------------------
 % Sectionpages
 %---------------------------------------------------------------------
-
-% Make Sectionhead uppercase
-\newcommand{\insertsectionHEAD}{%
-	\expandafter\insertsectionHEADaux\insertsectionhead}
-	\newcommand{\insertsectionHEADaux}[3]{\MakeUppercase{#3}
-}
-
 \if@doSectionPage
-% Insert frame with section title at every section start
+% Insert frame with current outline at beginning of sections
 \AtBeginSection[]
 {
 \begingroup
-\begin{frame}[plain]
-\centering
-\vfill\usebeamerfont{section title}\textcolor{WarmGreyDark}{\insertsectionHEAD}\vfill
+\begin{frame}{Outline}
+\tableofcontents[current]
 \end{frame}
 \endgroup
 }
@@ -277,11 +297,20 @@
 \usenavigationsymbolstemplate{}
 \setbeamertemplate{footline}
 {%
-\begin{beamercolorbox}[wd=\textwidth,ht=3ex,dp=3.5ex,leftskip=0.3cm,rightskip=0.3cm]{structure}%
-\hfill\usebeamerfont{page number in head/foot}%
-\insertframenumber%
-\end{beamercolorbox}%
-}
+\leavevmode%
+\begin{beamercolorbox}[wd=0.4\textwidth,ht=0.0726\paperheight,dp=0.01\paperheight,leftskip=0.0726\paperheight]{page number in head/foot}%
+\if@languageFinnish
+	\includegraphics[height=0.0626\paperheight]{TUTlogo_fi}
+\else
+	\includegraphics[height=0.0626\paperheight]{TUTlogo_en}
+\fi
+\end{beamercolorbox}
+\hfill%
+\begin{beamercolorbox}[wd=0.4\textwidth,ht=0.0726\paperheight,dp=0.01\paperheight,right,rightskip=0.4cm]{page number in head/foot}%
+\usebeamerfont{page number in head/foot}%
+\insertframenumber\vspace{2ex}%
+\end{beamercolorbox}
+}%
 
 %---------------------------------------------------------------------
 % Captions
@@ -338,15 +367,45 @@
 %---------------------------------------------------------------------
 % Images
 %---------------------------------------------------------------------
-
 \newbox\mytempbox
 \newdimen\mytempdimen
 
+% Image with copyright information
 \newcommand\includegraphicscopyright[3][]{%
   \leavevmode\vbox{\vskip3pt\raggedright\setbox\mytempbox=\hbox{\includegraphics[#1]{#2}}%
     \mytempdimen=\wd\mytempbox\box\mytempbox\par\vskip1pt%
     \usebeamerfont{copyright text}{\usebeamercolor[fg]{copyright text}{\vbox{\hsize=\mytempdimen#3}}}\vskip3pt%
 }}
+
+%---------------------------------------------------------------------
+% Bibliography
+%---------------------------------------------------------------------
+\AtEndPreamble{%
+\@ifpackageloaded{biblatex}{%
+  \WarningFilter{biblatex}{Patching footnotes failed}
+
+  \setbeamertemplate{bibliography item}{%
+    \ifboolexpr{ test {\ifentrytype{book}} or test {\ifentrytype{mvbook}}
+      or test {\ifentrytype{collection}} or test {\ifentrytype{mvcollection}}
+      or test {\ifentrytype{reference}} or test {\ifentrytype{mvreference}} }
+      {\setbeamertemplate{bibliography item}[book]}
+      {\ifentrytype{online}
+         {\setbeamertemplate{bibliography item}[online]}
+         {\setbeamertemplate{bibliography item}[article]}}%
+    \usebeamertemplate{bibliography item}}
+
+  \defbibenvironment{bibliography}
+    {\list{}
+       {\settowidth{\labelwidth}{\usebeamertemplate{bibliography item}}%
+        \setlength{\leftmargin}{\labelwidth}%
+        \setlength{\labelsep}{\biblabelsep}%
+        \addtolength{\leftmargin}{\labelsep}%
+        \setlength{\itemsep}{\bibitemsep}%
+        \setlength{\parsep}{\bibparsep}}}
+    {\endlist}
+    {\item}
+  }{}
+}
 
 \mode
 <all>

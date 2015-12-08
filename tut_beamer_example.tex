@@ -1,13 +1,56 @@
-\documentclass[compress,aspectratio=169]{beamer}
-
-\usepackage[english]{babel}
-\usepackage{blindtext}
-\usepackage{listings}
+\documentclass[aspectratio=169]{beamer}
+% other options: finnish, sectionpages
 
 \usetheme{tut}
 
-\title{\LaTeX{} Beamer Theme}
-\subtitle{Example}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{csquotes}
+\usepackage[style=authoryear,backend=biber]{biblatex}
+\usepackage{filecontents}
+\usepackage{blindtext}
+\usepackage{pgfpages}
+
+%\setbeameroption{show notes on second screen}% you'll need pgfpages for this one and a suitable pdf viewer i.e. dspdfviewer
+%\setbeameroption{show notes}
+
+\lstset{%
+  basicstyle=\scriptsize\ttfamily,
+  backgroundcolor=\color{TUTGrey}
+}
+
+\begin{filecontents}{bibliography.bib}
+@book{hoenig1997,
+ author = {Hoenig, Alan},
+ title = {TEX Unbound: Latex and TEX Strategies for Fonts, Graphics and More},
+ year = {1997},
+ publisher = {Oxford University Press, Inc.}
+} 
+@misc{tantau2013,
+  title = {The BEAMER class -- user guide for version~3.36},
+  author = {T.~Tantau, J.~Wright, V.~Mileti{\'c}},
+  year = {2015},
+}
+@online{tutgraphic,
+  title = {Graphic guidelines},
+  author = {{Tampere University of Technology}},
+  note = {tutka > image > printed publications > graphic guidelines}
+}
+\end{filecontents}
+\addbibresource{bibliography.bib}
+
+% The color palettes can be changed
+%   primary: lower half of titlepage, lower half of left color beam, default block environment
+%   secondary: upper half of left color beam, example block body
+%   tertiary: top header showing outline
+%   quaternary: example block title
+%   structure: structure elements such as list items
+%\setbeamercolor{palette primary}{fg=white,bg=TUTsecPetrol}
+%\setbeamercolor{palette secondary}{fg=white,bg=TUTsecOrange}
+%\setbeamercolor{palette quaternary}{use=palette secondary,bg=palette secondary.bg!50!black}
+
+\title{TUT Beamer Theme}
+\subtitle{A theme for typesetting presentation slides using \LaTeX{}}
 \author{Tuomas Välimäki}
 \email{tuomas.s.valimaki@tut.fi}
 \institute{Department of Automation Science and Engineering\\Tampere University of Technology}
@@ -17,20 +60,84 @@
 
 \maketitle
 
-\section*{Contents}
-\begin{frame}
-	\frametitle{Contents}
-	\tableofcontents[hideallsubsections]
+\section*{Outline}
+\begin{frame}{Outline}
+	\tableofcontents
 \end{frame}
 
-\section{First section}
-\subsection{Text}
-\begin{frame}{First Slide}
-	\blindtext
+\section{Introduction}
+\subsection{Main features}
+\begin{frame}{Main features}
+  \begin{itemize}
+    \item supports all aspect ratios
+    \item vector backgrounds ``drawn'' using Ti\emph{k}Z
+    \item customizable colors
+    \item bilingual (finnish, english)
+  \end{itemize}
+  \bigskip
+  Newest versions available under \url{https://github.com/tvalimaki/tut-beamer}
 \end{frame}
 
-\subsection{Figure and equation}
-\begin{frame}{Another Slide}
+\note{This is how a note page looks like if you use the beameroptions ``show notes'' or ``show notes on second screen''}
+
+\subsection{Colors}
+\begin{frame}{Colors, 1/2}
+  \begin{columns}
+  \begin{column}{0.475\textwidth}
+    All colors introduced in TUT graphic guidelines are predefined.
+  \end{column}
+  \begin{column}{0.475\textwidth}
+  Primary colors:\par
+  \begin{tikzpicture}[%
+      node distance=9em,
+      every node/.append style={font=\scriptsize,
+        minimum size=3ex}
+  ]
+    \node[rectangle,fill=TUTGreen,label=east:TUTGreen] (1) {};
+    \node[rectangle,fill=TUTBlue, label=east:TUTBlue,right of=1] (2) {};
+    \node[rectangle,fill=TUTGrey, label=east:TUTGrey,below of=1,node distance=4ex] (3) {};
+  \end{tikzpicture}
+
+  Secondary colors:\par
+  \begin{tikzpicture}[%
+      node distance=9em,
+      every node/.append style={font=\scriptsize,
+        minimum size=3ex}
+  ]
+    \node[rectangle,fill=TUTsecOrange,  label=east:TUTsecOrange]              (1) {};
+    \node[rectangle,fill=TUTsecGreen,   label=east:TUTsecGreen,   right of=1] (2) {};
+    \node[rectangle,fill=TUTsecPink,    label=east:TUTsecPink,    below of=1,node distance=4ex] (3) {};
+    \node[rectangle,fill=TUTsecPetrol,  label=east:TUTsecPetrol,  right of=3] (4) {};
+    \node[rectangle,fill=TUTsecPlum,    label=east:TUTsecPlum,    below of=3,node distance=4ex] (5) {};
+    \node[rectangle,fill=TUTsecBlue,    label=east:TUTsecBlue,    right of=5] (6) {};
+    \node[rectangle,fill=TUTsecRed,     label=east:TUTsecRed,     below of=5,node distance=4ex] (7) {};
+    \node[rectangle,fill=TUTsecDarkblue,label=east:TUTsecDarkblue,right of=7] (8) {};
+    \node[rectangle,fill=TUTsecDarkred, label=east:TUTsecDarkred, below of=7,node distance=4ex] (9) {};
+  \end{tikzpicture}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[containsverbatim]{Colors, 2/2}
+  In addition to defining colors for single items, the color palettes of the theme can be changed.
+
+  Try for example adding
+  \begin{lstlisting}[%
+    language={[LaTeX]TeX},
+    texcsstyle=*\color{TUTsecOrange},
+    moretexcs={setbeamercolor}
+  ]
+  \setbeamercolor{palette primary}{fg=white,bg=TUTsecPetrol}
+  \setbeamercolor{palette secondary}{fg=white,bg=TUTsecOrange}
+  \setbeamercolor{palette quaternary}{use=palette secondary,
+                                      bg=palette secondary.bg!50!black}
+  \end{lstlisting}
+  to your preamble.
+\end{frame}
+
+\section{Example environments}
+\subsection{Figures and equations}
+\begin{frame}{Figures and equations}
   \begin{columns}[onlytextwidth]
     \begin{column}{0.5\textwidth}
         \centering
@@ -40,16 +147,16 @@
     \end{column}
     \begin{column}{0.4\textwidth}
     Here is some regular text in a column. And there is an equation
-    \[
+    \begin{displaymath}
       f(x)=ax^2+bx+c
-    \]
+    \end{displaymath}
     Here is some \alert{important} text.
     \end{column}
     \end{columns}
 \end{frame}
 
 \subsection{Lists}
-\begin{frame}{Third Slide}
+\begin{frame}{List environments}
   \begin{columns}[onlytextwidth]
     \begin{column}{0.5\textwidth}
       This slide has a list\dots
@@ -65,9 +172,8 @@
     \end{columns}
 \end{frame}
 
-\section{Another section}
 \subsection{Blocks}
-\begin{frame}{Some Blocks}
+\begin{frame}{Block environments}
     \begin{exampleblock}{Example}
         This is an example
     \end{exampleblock}
@@ -81,31 +187,10 @@
     \end{theorem}
 \end{frame}
 
-\subsection{Listing}
-\begin{frame}[containsverbatim]{More slides}
-    There's a listing below
-    \lstset{language=bash}
-    \begin{lstlisting}
-    $ sudo apt-get install texlive
-    \end{lstlisting}%$
-\end{frame}
-
 \section{Further reading}
 \begin{frame}{Further reading}
-	\begin{thebibliography}{10}
-    
-	\beamertemplatebookbibitems
-	\bibitem{Mountaineers2010}
-	Mountaineers
-	\newblock \doublequoted{Mountaineering: Freedom of the Hills}
-	\newblock Mountaineers Books, 2010
-
-	\beamertemplatearticlebibitems
-	\bibitem{Tantau2013}
-	T.~Tantau, J.~Wright, V.~Miletić
-	\newblock \doublequoted{The BEAMER class -- user guide for version~3.33}
-	\newblock 2013
-  \end{thebibliography}
+  \nocite{*}
+  \printbibliography[heading=none]
 \end{frame}
 
 \end{document}

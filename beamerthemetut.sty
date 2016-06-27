@@ -525,7 +525,7 @@
 \newlength{\gearsize}
 
 \newcommand\tutlogo[2][fill=black]{%
-\setlength{\gearsize}{#2}
+\setlength{\gearsize}{#2}%
 \begin{tikzpicture}[outer sep=0pt,inner sep=0pt]
     \node (gear) {\tutgear[#1]{\gearsize}};
     \node[right of=gear,anchor=west,node distance=0.71885\gearsize] {\tuttext[#1]{0.01246\gearsize}};
@@ -533,7 +533,7 @@
 
 % Title page background
 \newcommand\TitleBgImage{%
-\begin{tikzpicture}[overlay,remember picture]
+\begin{tikzpicture}[overlay,remember picture,inner sep=0pt,outer sep=0pt]
 % colored upper side beam
 \usebeamercolor{palette secondary}
 \path[fill=bg,nonzero rule]
@@ -544,8 +544,10 @@
     (current page.south west) -- ++(0,0.5544\paperheight) -- +(\paperwidth,0) -- (current page.south east) -- cycle;
 % gear-half
 \node at ([xshift=-0.047\paperheight]current page.south west) [anchor=center] {\tutgear[fill=white]{1.13\paperheight}};
-% logo
-\node at ([shift={(0.0626\paperheight,-0.0626\paperheight)}] current page.north west) [anchor=west] {\tutlogo{0.0626\paperheight}};
+% TUT logo
+\node at ([shift={(\Gm@lmargin,-0.0626\paperheight)}] current page.north west) [anchor=west] {\tutlogo{0.0626\paperheight}};
+% additional logo if specified by user
+\node at ([shift={(-0.0313\paperheight,-0.0313\paperheight)}] current page.north east) [anchor=north east] {\insertlogo};
 \end{tikzpicture}
 }
 
@@ -565,6 +567,10 @@
 
 \newcommand\BgImage{\FrameBgImage}
 \usebackgroundtemplate{\BgImage}
+
+% remove logo from its default position on right sidebar
+\setbeamertemplate{sidebar right}{default}
+{}
 
 %---------------------------------------------------------------------
 % Titlepage
@@ -646,14 +652,13 @@
 % Footline
 %---------------------------------------------------------------------
 \usenavigationsymbolstemplate{}
-\setbeamertemplate{footline}
+\setbeamertemplate{footline}%
 {%
 \leavevmode%
-\begin{beamercolorbox}[wd=0.4\textwidth,ht=0.0726\paperheight,dp=0.01\paperheight,leftskip=0.0726\paperheight]{page number in head/foot}%
+\begin{beamercolorbox}[wd=0.5\paperwidth,ht=0.0726\paperheight,dp=0.01\paperheight,leftskip=\Gm@lmargin]{page number in head/foot}%
 \tutlogo{0.0626\paperheight}
-\end{beamercolorbox}
-\hfill%
-\begin{beamercolorbox}[wd=0.4\textwidth,ht=0.0726\paperheight,dp=0.01\paperheight,right,rightskip=0.4cm]{page number in head/foot}%
+\end{beamercolorbox}%
+\begin{beamercolorbox}[wd=0.5\paperwidth,ht=0.0726\paperheight,dp=0.01\paperheight,right,rightskip=0.4cm]{page number in head/foot}%
 \usebeamerfont{page number in head/foot}%
 \insertframenumber\vspace{2ex}%
 \end{beamercolorbox}

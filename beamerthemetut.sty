@@ -632,7 +632,7 @@
 \AtBeginSection[]
 {
 \begingroup
-\begin{frame}{Outline}
+\begin{frame}{\contentsname}
 \tableofcontents[current]
 \end{frame}
 \endgroup
@@ -646,6 +646,10 @@
 {
 \vspace*{1mm}
 \usebeamerfont{frametitle}\MakeUppercase{\insertframetitle}
+\ifx\insertframesubtitle\empty
+\else
+  -- \insertframesubtitle
+\fi
 }
 
 %---------------------------------------------------------------------
@@ -735,6 +739,7 @@
 \AtEndPreamble{%
 \@ifpackageloaded{biblatex}{%
   \WarningFilter{biblatex}{Patching footnotes failed}
+  \defbibheading{bibliography}[\bibname]{}
 
   \setbeamertemplate{bibliography item}{%
     \ifboolexpr{ test {\ifentrytype{book}} or test {\ifentrytype{mvbook}}

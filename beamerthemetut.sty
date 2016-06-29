@@ -650,7 +650,7 @@
 \usebeamerfont{frametitle}\MakeUppercase{\insertframetitle}
 \ifx\insertframesubtitle\empty
 \else
-  -- \insertframesubtitle
+  --- \insertframesubtitle
 \fi
 }
 
@@ -680,7 +680,6 @@
 %---------------------------------------------------------------------
 \setbeamertemplate{block begin}
 {
-  \setbeamercolor{item}{parent=block body}
   \par\vskip\medskipamount%
   \begin{beamercolorbox}[sep=.5ex,dp=0.6ex,leftskip=0.5ex,rightskip=0.5ex]{block title}
     \usebeamerfont*{block title}\insertblocktitle%
@@ -695,7 +694,7 @@
 
 \setbeamertemplate{block alerted begin}
 {
-  \setbeamercolor{item}{parent=block body alerted}
+  \setbeamercolor{local structure}{use=block title alerted,fg=block title alerted.bg}
   \par\vskip\medskipamount%
   \begin{beamercolorbox}[sep=.5ex,dp=0.6ex,leftskip=0.5ex,rightskip=0.5ex]{block title alerted}
     \usebeamerfont*{block title alerted}\insertblocktitle%
